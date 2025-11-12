@@ -1,20 +1,17 @@
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
 #include <string>
+#include <cmath>
 #include <vector>
 #include <fstream>
-#include <cstdlib>  // for system()
-using namespace std;
 
-#ifdef _WIN32
-#define CLEAR "cls"
-#else
-#define CLEAR "clear"
-#endif
+using namespace std;
 
 vector<string> Tasks;
 const string FILENAME = "tasks.txt";
 
-// --- load tasks ---
+// load tasks from file
 void loadTasks() {
     ifstream file(FILENAME);
     if (!file.is_open()) {
@@ -30,9 +27,10 @@ void loadTasks() {
     }
 
     file.close();
+    cout << "Loaded " << Tasks.size() << " tasks.\n";
 }
 
-// --- save tasks ---
+// save tasks to file
 void saveTasks() {
     ofstream file(FILENAME);
     if (!file.is_open()) {
@@ -45,43 +43,38 @@ void saveTasks() {
     }
 
     file.close();
+    cout << string(100, '\n');
+    cout << "Tasks saved successfully.\n";
 }
 
-// --- menu ---
+// Start menu
 int startMenu() {
     int choice;
-    cout << "=== CLI ToDo App ===\n";
+    cout << "\n=== CLI ToDo App ===\n";
     cout << "1. Add a task\n";
     cout << "2. Remove a task\n";
     cout << "3. List all tasks\n";
     cout << "4. Exit\n";
-    cout << "====================\n";
-    cout << "Choice: ";
     cin >> choice;
     cin.ignore();
     return choice;
 }
 
-// --- add task ---
+// add task
 void addTask() {
-    system(CLEAR);
     string addedTask;
     cout << "Enter task: ";
     getline(cin, addedTask);
     Tasks.push_back(addedTask);
     saveTasks();
-    cout << "✅ Task added!\n";
-    cout << "Press Enter to return to menu...";
-    cin.get();
+    cout << string(100, '\n');
+    cout << "Task added!\n";
 }
 
-// --- remove task ---
+// remove task
 void removeTask() {
-    system(CLEAR);
     if (Tasks.empty()) {
         cout << "No tasks to remove.\n";
-        cout << "Press Enter to return to menu...";
-        cin.get();
         return;
     }
 
@@ -89,7 +82,7 @@ void removeTask() {
     for (int i = 0; i < Tasks.size(); i++) {
         cout << i + 1 << ". " << Tasks[i] << "\n";
     }
-
+    cout << string(100, '\n');
     cout << "Enter task number to remove: ";
     int index;
     cin >> index;
@@ -97,36 +90,32 @@ void removeTask() {
 
     if (index < 1 || index > Tasks.size()) {
         cout << "Invalid index.\n";
-    } else {
-        Tasks.erase(Tasks.begin() + index - 1);
-        saveTasks();
-        cout << "✅ Task removed!\n";
+        return;
     }
 
-    cout << "Press Enter to return to menu...";
-    cin.get();
+    Tasks.erase(Tasks.begin() + index - 1);
+    saveTasks();
+    cout << string(100, '\n');
+    cout << "Task removed!\n";
 }
 
-// --- list tasks ---
+// list tasks
 void listTasks() {
-    system(CLEAR);
     if (Tasks.empty()) {
         cout << "No tasks available.\n";
-    } else {
-        cout << "Your tasks:\n";
-        for (int i = 0; i < Tasks.size(); i++) {
-            cout << i + 1 << ". " << Tasks[i] << "\n";
-        }
+        return;
     }
-    cout << "\nPress Enter to return to menu...";
-    cin.get();
+    cout << string(100, '\n');
+    cout << "Your tasks:\n";
+    for (int i = 0; i < Tasks.size(); i++) {
+        cout << i + 1 << ". " << Tasks[i] << "\n";
+    }
 }
 
 int main() {
     loadTasks();
 
     while (true) {
-        system(CLEAR);
         int choice = startMenu();
 
         switch (choice) {
@@ -140,7 +129,6 @@ int main() {
                 listTasks();
                 break;
             case 4:
-                system(CLEAR);
                 cout << "Goodbye!\n";
                 saveTasks();
                 return 0;
