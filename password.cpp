@@ -25,7 +25,7 @@ int main() {
   int passwordLength = 30;
   std::string password = generateRandomPassword(passwordLength);
 
-  std::cout << "This is your new Password: "  << password << std::endl;
+  std::cout << "This is your new Password: " << std::endl << password << std::endl << "Do you like it?";
 
   return 0;
 }
