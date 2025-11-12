@@ -43,7 +43,6 @@ void saveTasks() {
     }
 
     file.close();
-    cout << string(100, '\n');
     cout << "Tasks saved successfully.\n";
 }
 
@@ -67,7 +66,6 @@ void addTask() {
     getline(cin, addedTask);
     Tasks.push_back(addedTask);
     saveTasks();
-    cout << string(100, '\n');
     cout << "Task added!\n";
 }
 
@@ -82,7 +80,6 @@ void removeTask() {
     for (int i = 0; i < Tasks.size(); i++) {
         cout << i + 1 << ". " << Tasks[i] << "\n";
     }
-    cout << string(100, '\n');
     cout << "Enter task number to remove: ";
     int index;
     cin >> index;
@@ -95,7 +92,6 @@ void removeTask() {
 
     Tasks.erase(Tasks.begin() + index - 1);
     saveTasks();
-    cout << string(100, '\n');
     cout << "Task removed!\n";
 }
 
@@ -105,7 +101,6 @@ void listTasks() {
         cout << "No tasks available.\n";
         return;
     }
-    cout << string(100, '\n');
     cout << "Your tasks:\n";
     for (int i = 0; i < Tasks.size(); i++) {
         cout << i + 1 << ". " << Tasks[i] << "\n";
