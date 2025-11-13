@@ -5,10 +5,12 @@
 !*.*
 
 # Unignore all dirs
-!/
+!*/
 
 /.vscode
 
 *.out
 
 *.txt
+
+!texteditor/
