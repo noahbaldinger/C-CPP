@@ -10,3 +10,4 @@
 # Ignore vscode AFTER directories are unignored
 .vscode/
 
+Makefile
