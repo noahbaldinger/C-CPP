@@ -7,5 +7,5 @@
 # Unignore all files with extensions
 !*.*
 
-.vscode/
+.vscode/*
 .gitignore
