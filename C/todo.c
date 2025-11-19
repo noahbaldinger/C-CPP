@@ -148,9 +148,15 @@ int main() {
         int choice = startMenu();
 
         switch (choice) {
-            case 1: addTask(); break;
-            case 2: removeTask(); break;
-            case 3: listTasks(); break;
+            case 1: 
+                addTask(); 
+                break;
+            case 2:    
+                removeTask(); 
+                break;
+            case 3: 
+                listTasks(); 
+                break;
             case 4:
                 saveTasks();
                 return 0;
