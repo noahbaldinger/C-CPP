@@ -907,14 +907,15 @@ void editorMoveCursor(int key) {
       } else if (E.cy > 0) {
         E.cy--;
         E.cx = E.row[E.cy].size;
+      } else if (E.cx == 0) {
+        return;
       }
       break;
     case ARROW_RIGHT:
       if (row && E.cx < row->size) {
         E.cx++;
         } else if (row && E.cx == row->size) {
-        E.cy++;
-        E.cx = 0;
+        E.cx++;
       }
       break;
     case ARROW_UP:
@@ -976,12 +977,12 @@ void processNormalMode(int c) {
     };
     case 'i': 
       E.mode = MODE_INSERT; 
-      write(STDOUT_FILENO, "\x1b[6 q", 4); // <--- ADDED: Switch to I-Beam
+      write(STDOUT_FILENO, "\x1b[2 q", 4); // <--- ADDED: Switch to I-Beam
       break;
     case 'a': 
       editorMoveCursor(ARROW_RIGHT); 
       E.mode = MODE_INSERT; 
-      write(STDOUT_FILENO, "\x1b[6 q", 4); // <--- ADDED: Switch to I-Beam
+      write(STDOUT_FILENO, "\x1b[2 q", 4); // <--- ADDED: Switch to I-Beam
       break;
     case 'h': editorMoveCursor(ARROW_LEFT); return;
     case 'j': editorMoveCursor(ARROW_DOWN); return;
