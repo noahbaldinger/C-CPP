@@ -941,9 +941,11 @@ void processInsertMode(int c) {
     return;
   }
   switch (c) {
-    case CTRL_KEY('s'):
-      editorSave();
-      return;
+    case ARROW_DOWN:
+    case ARROW_LEFT:
+    case ARROW_RIGHT:
+    case ARROW_UP:
+      editorMoveCursor(c);
     default:
       if (!iscntrl(c) && c < 128) editorInsertChar(c);
       else {
