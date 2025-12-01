@@ -1051,29 +1051,44 @@ void processNormalMode(int c) {
   }
 }
 
-/* --- Command-Mode (einfaches Beispiel) --- */
+/* --- Command-Mode  --- */
+
 void processCommandMode(int c) {
-  static char cmd[64];
+  static char *cmd = NULL;
   static int cmdlen = 0;
 
-  if (c == '\x1b') { /* ESC -> abbrechen */
+  // Falls noch kein Buffer existiert → neu anlegen
+  if (!cmd) {
+    cmd = malloc(64);
+    cmd[0] = '\0';
     cmdlen = 0;
+  }
+
+  /* ===== ESC gedrückt → Command Mode abbrechen ===== */
+  if (c == '\x1b') {
+    free(cmd);
+    cmd = NULL;
+    cmdlen = 0;
+
     editorSetStatusMessage("");
     E.mode = MODE_NORMAL;
     write(STDOUT_FILENO, "\x1b[1 q", 4);
     return;
   }
 
+  /* ===== Backspace ===== */
   if (c == DEL_KEY || c == CTRL_KEY('h') || c == 127) {
     if (cmdlen > 0) {
       cmdlen--;
       cmd[cmdlen] = '\0';
       editorSetStatusMessage(":%s", cmd);
-      editorRefreshScreen(); // Immediately update the status bar to show the
-                             // deletion
+      editorRefreshScreen();
     } else {
-      // If cmdlen is 0, treat backspace as ESC to exit command mode
+      // Treat Backspace as ESC when empty
+      free(cmd);
+      cmd = NULL;
       cmdlen = 0;
+
       editorSetStatusMessage("");
       E.mode = MODE_NORMAL;
       write(STDOUT_FILENO, "\x1b[1 q", 4);
@@ -1081,43 +1096,64 @@ void processCommandMode(int c) {
     return;
   }
 
+  /* ===== Enter gedrückt → Command ausführen ===== */
   if (c == '\r') {
     cmd[cmdlen] = '\0';
+
+    /* =========== :q =========== */
     if (strcmp(cmd, "q") == 0) {
       if (E.dirty > 0) {
+        // ❗ zurück in NORMAL MODE
         editorSetStatusMessage(
             "Warning! There are unsaved changes in the buffer.");
+
+        free(cmd);
+        cmd = NULL;
+        cmdlen = 0;
+
+        E.mode = MODE_NORMAL;
         return;
       }
+
       write(STDOUT_FILENO, "\x1b[2J", 4);
       write(STDOUT_FILENO, "\x1b[H", 3);
-      cmdlen = 0;
       exit(0);
     }
 
+    /* --- q! --- */
     if (strcmp(cmd, "q!") == 0) {
       write(STDOUT_FILENO, "\x1b[2J", 4);
       write(STDOUT_FILENO, "\x1b[H", 3);
       exit(0);
     }
 
+    /* --- w --- */
     if (strcmp(cmd, "w") == 0)
       editorSave();
 
+    /* --- wq --- */
     if (strcmp(cmd, "wq") == 0) {
+      editorSave();
       write(STDOUT_FILENO, "\x1b[2J", 4);
       write(STDOUT_FILENO, "\x1b[H", 3);
-      editorSave();
       exit(0);
     }
+
+    // Nach Command Mode alles löschen (temporär)
+    free(cmd);
+    cmd = NULL;
     cmdlen = 0;
+
     E.mode = MODE_NORMAL;
     return;
   }
-  if (!iscntrl(c) && cmdlen < (int)sizeof(cmd) - 1) {
+
+  /* ===== normale nicht-kontroll Zeichen → zur Eingabe hinzufügen ===== */
+  if (!iscntrl(c)) {
     cmd[cmdlen++] = c;
-    /* optional: in Statusbar echoen */
+    cmd[cmdlen] = '\0';
     editorSetStatusMessage(":%s", cmd);
+    return;
   }
 }
 
