@@ -12,6 +12,4 @@
 
 C/*/Makefile
 
-C/*/*.txt
-
-C/*/*.c
+!C/*
