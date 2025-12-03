@@ -9,7 +9,7 @@
 using namespace std;
 
 vector<string> Tasks;
-const string FILENAME = "tasks.txt";
+const string FILENAME = "/home/noah/tasks.txt";
 
 // load tasks from file
 void loadTasks() {
